@@ -2,10 +2,11 @@ package java_vacation;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
+import java.awt.image.*;
+import java.io.*;
 import java.util.ArrayList;
-import javax.imageio.ImageIO;
+import javax.imageio.*;
+import javax.sound.sampled.*;
 import javax.swing.*;
 
 class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener, MouseMotionListener {
@@ -153,6 +154,22 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 		e_h = ImageHeigthValue("몬스터.png");
 	}
 
+	public void Sound(String file, boolean Loop) {
+		Clip clip;
+		try {
+			AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(new FileInputStream(file)));
+			clip = AudioSystem.getClip();
+			clip.open(ais);
+			clip.start();
+			if (Loop)
+				clip.loop(-1);
+			// Loop 값이true면 사운드재생을무한반복시킵니다.
+			// false면 한번만재생시킵니다.
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void start1() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.addKeyListener(this);
@@ -208,6 +225,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 		backgroundgc.drawString("제작자: ILL , JS , HS , JW", 1150, 785);
 		Draw_target();
 		g.drawImage(buffimg, 0, 0, this);
+		
 	}
 
 	public void loading(Graphics g) {
@@ -502,6 +520,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 			itemgc.drawImage(tree_img, it.x, it.y, this);
 			if (Crash(charX, charY, it.x, it.y, charactergc, itemgc)) {
 				Item_List.remove(i);
+				Sound("아이템코인.wav", false);
 				itemscore++;
 			}
 		}
