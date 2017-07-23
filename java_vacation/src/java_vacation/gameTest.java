@@ -51,6 +51,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 	// 시스템
 	Image buffimg, background;
 	Image[] Cloud_img;
+	Image[] Explo_img;
 	// 메뉴
 	Image End_img, startMenu, startButton, GameOver, Loading, restart;
 	// 무기
@@ -61,14 +62,16 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 	// 상점
 	Image item_img, Store, Skilliven1, Skillstore1, storeitem1, invenitem1;
 	// 그래픽스
+	Image explosion;
 	Graphics charactergc, missilegc, cursergc, cloudgc, scoregc, itemgc, backgroundgc, newGameButtongc, storeButtongc,
-			restartButtongc, gungc;
+			restartButtongc, gungc, explosiongc;;
 
 	Thread th;
 	ArrayList Missile_List = new ArrayList();
 	ArrayList Enemy_List = new ArrayList();
 	ArrayList Item_List = new ArrayList();
 	ArrayList Cloud_List = new ArrayList();
+	ArrayList Explosion_List = new ArrayList();
 
 	int ex = 0, ey = 0;
 	int charX, charY;
@@ -104,6 +107,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 	RandomEnemy en;
 	RandomEnemy en1;
 	Item it;
+	Explosion exp;
 
 	int m_w, m_h;
 	int e_w, e_h;
@@ -147,6 +151,10 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 		Cloud_img = new Image[4];
 		for (int i = 0; i < Cloud_img.length; ++i) {
 			Cloud_img[i] = new ImageIcon("cloud" + i + ".png").getImage();
+		}
+		Explo_img = new Image[3];
+		for (int i = 0; i < Explo_img.length; ++i) {
+			Explo_img[i] = new ImageIcon("explo_" + i + ".png").getImage();
 		}
 		m_w = ImageWidthValue("물방울.png");
 		m_h = ImageHeigthValue("믈방울.png");
@@ -196,7 +204,9 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 		storeButtongc = buffimg.getGraphics();
 		restartButtongc = buffimg.getGraphics();
 		gungc = buffimg.getGraphics();
-
+		explosiongc = buffimg.getGraphics();
+		
+		
 		if (playStatus == 0)
 			startMenu(g);
 		if (playStatus == 1)
@@ -225,7 +235,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 		backgroundgc.drawString("제작자: ILL , JS , HS , JW", 1150, 785);
 		Draw_target();
 		g.drawImage(buffimg, 0, 0, this);
-		
+
 	}
 
 	public void loading(Graphics g) {
@@ -406,6 +416,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 			Draw_Missile();
 			Draw_item();
 			Draw_enemy();
+			Draw_Explosion();
 
 		}
 
@@ -550,6 +561,8 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 					en.monsterHP -= damage;
 					if (en.monsterHP <= 0) {
 						it = new Item((int) en.x, (int) en.y, 33, 23);
+						exp = new Explosion((int) en.x + 5, (int) en.y + 5, 0);
+						Explosion_List.add(exp);
 						Enemy_List.remove(i);
 						Item_List.add(it);
 						monsterkill++;
@@ -686,6 +699,55 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 		}
 	}
 
+	public void Draw_Explosion() {
+		for (int i = 0; i < Explosion_List.size(); ++i) {
+			exp = (Explosion) Explosion_List.get(i);
+
+			if (exp.damage == 0) {
+				// 설정값이 0 이면 폭발용 이미지 그리기
+
+				if (exp.ex_cnt < 7) {
+					explosiongc.drawImage(Explo_img[0], exp.x - Explo_img[0].getWidth(null) / 2,
+							exp.y - Explo_img[0].getHeight(null) / 2, this);
+				} else if (exp.ex_cnt < 14) {
+					explosiongc.drawImage(Explo_img[1], exp.x - Explo_img[1].getWidth(null) / 2,
+							exp.y - Explo_img[1].getHeight(null) / 2, this);
+				} else if (exp.ex_cnt < 21) {
+					explosiongc.drawImage(Explo_img[2], exp.x - Explo_img[2].getWidth(null) / 2,
+							exp.y - Explo_img[2].getHeight(null) / 2, this);
+				} else if (exp.ex_cnt > 21) {
+					Explosion_List.remove(i);
+					exp.ex_cnt = 0;
+					// 폭발은 따로 카운터를 계산하여
+					// 이미지를 순차적으로 그림.
+				}
+			} else { // 설정값이 1이면 단순 피격용 이미지 그리기
+				if (exp.ex_cnt < 7) {
+					explosiongc.drawImage(Explo_img[0], exp.x + 120, exp.y + 15, this);
+				} else if (exp.ex_cnt < 14) {
+					explosiongc.drawImage(Explo_img[1], exp.x + 60, exp.y + 5, this);
+				} else if (exp.ex_cnt < 21) {
+					explosiongc.drawImage(Explo_img[0], exp.x + 5, exp.y + 10, this);
+				} else if (exp.ex_cnt > 21) {
+					Explosion_List.remove(i);
+					exp.ex_cnt = 0;
+				}
+			}
+		}
+	}
+
+	public void ExplosionProcess() {
+		// 폭발 이펙트 처리용 메소드
+
+		for (int i = 0; i < Explosion_List.size(); ++i) {
+			exp = (Explosion) Explosion_List.get(i);
+			exp.effect();
+			// 이펙트 애니메이션을 나타내기위해
+			// 이펙트 처리 추가가 발생하면 해당 메소드를 호출.
+
+		}
+	}
+
 	// Crash(ms.realX, ms.realX, en.x, en.y, m_w, m_h, 31, 48)
 	// Math.abs 절대갑 반환
 	public boolean Crash(int x1, int y1, int x2, int y2, Graphics img1, Graphics img2) {
@@ -755,7 +817,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 			}
 			if (statecode = true && point > 0) {
 				// HP , 공격력 , 이동속도
-				if(count % 3 == 0) {
+				if (count % 3 == 0) {
 					if (x2 >= 1250 && x2 <= 1265 && y2 >= 610 && y2 <= 635) {
 						MaxHP += 10;
 						HP += 10;
@@ -855,7 +917,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 	}
 
 	public void mouseProcess() {
-		
+
 		if (shoot && (count % 7 == 0)) {
 			if (countdown == 200) {
 				ms = new Missile(charX + 10, charY + 10, nowX, nowY, 5);
@@ -915,6 +977,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 				keyProcess();
 				mouseProcess();
 				EnemyProcess();
+				ExplosionProcess();
 				repaint();
 				Thread.sleep(20);
 				count++;
@@ -1222,6 +1285,25 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 			this.width = width;
 			this.height = height;
 		}
+	}
+}
+
+class Explosion {
+
+	int x;
+	int y;
+	int ex_cnt;
+	int damage;
+
+	Explosion(int x, int y, int damage) {
+		this.x = x;
+		this.y = y;
+		this.damage = damage;
+		ex_cnt = 0;
+	}
+
+	public void effect() {
+		ex_cnt++;
 	}
 }
 
