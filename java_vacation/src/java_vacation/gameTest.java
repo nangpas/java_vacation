@@ -332,10 +332,13 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 
 	public void End(Graphics g) {
 		backgroundgc.drawImage(End_img, 0, 0, this);
-		restartButtongc.drawImage(restart, 450, 600, this);
-		restartButtongc.setClip(450, 600, 250, 63);
-		backgroundgc.drawString("점수 : " + treescore + "   죽인 몬스터 수 : " + monsterkill, 450, 430);
-		backgroundgc.drawImage(GameOver, 450, 530, this);
+		restartButtongc.setColor(Color.RED);
+		restartButtongc.drawImage(restart, 510, 700, this);
+		restartButtongc.setClip(510, 700, 250, 63);
+		backgroundgc.setFont(new Font("Default", Font.BOLD, 20));
+		backgroundgc.setColor(Color.WHITE);
+		backgroundgc.drawString("점수 : " + treescore, 1100, 730);
+		backgroundgc.drawString("죽인 몬스터 수 : " + monsterkill, 1100, 760);
 		Endinit();
 		g.drawImage(buffimg, 0, 0, this);
 	}
