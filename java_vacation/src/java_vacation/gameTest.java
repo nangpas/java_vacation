@@ -129,7 +129,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 		target_img = new ImageIcon("커서.png").getImage();
 		Enemy_img = new ImageIcon("몬스터.png").getImage();
 		tree_img = new ImageIcon("star.png").getImage();
-		End_img = new ImageIcon("엔딩화면.png").getImage();
+		End_img = new ImageIcon("엔딩화면2.png").getImage();
 		startMenu = new ImageIcon("게임시작2.png").getImage();
 		startButton = new ImageIcon("NewGame.png").getImage();
 		GameOver = new ImageIcon("GameOver.png").getImage();
