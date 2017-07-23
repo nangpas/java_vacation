@@ -1,6 +1,5 @@
 package java_vacation;
 
-
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -44,6 +43,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 	boolean keyRight = false;
 	boolean playerMove = false;
 	boolean keyUpRight = false;
+	boolean shoot = false;
 
 	Toolkit tk = Toolkit.getDefaultToolkit(); // 이미 만들어진 객체(이미지 관련)
 
@@ -66,7 +66,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 	Thread th;
 	ArrayList Missile_List = new ArrayList();
 	ArrayList Enemy_List = new ArrayList();
-	ArrayList Tree_List = new ArrayList();
+	ArrayList Item_List = new ArrayList();
 	ArrayList Cloud_List = new ArrayList();
 
 	int ex = 0, ey = 0;
@@ -77,7 +77,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 
 	// 캐릭터
 	int HP = 50, MaxHP = 50;
-	int treescore = 0;
+	int itemscore = 0;
 	int level = 50;
 	int playStatus = 0;
 	int moveStatus = 0, player_Speed = 5;
@@ -100,7 +100,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 	Missile ms;
 	RandomEnemy en;
 	RandomEnemy en1;
-	Tree tr;
+	Item it;
 
 	int m_w, m_h;
 	int e_w, e_h;
@@ -156,10 +156,10 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 		this.addKeyListener(this);
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
-		// Cursor invisCursor = tk.createCustomCursor(tk.createImage(""), new
-		// Point(), null);
-		// this.setCursor(invisCursor);
-		// this.getGlassPane().setVisible(true);
+		Cursor invisCursor = tk.createCustomCursor(tk.createImage(""), new
+		Point(), null);
+		this.setCursor(invisCursor);
+		this.getGlassPane().setVisible(true);
 		th = new Thread(this);
 		th.start();
 	}
@@ -188,8 +188,8 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 		if (playStatus == 3) {
 			for (int z = 0; z < Missile_List.size(); ++z)
 				Missile_List.remove(z);
-			for (int z = 0; z < Tree_List.size(); ++z)
-				Tree_List.remove(z);
+			for (int z = 0; z < Item_List.size(); ++z)
+				Item_List.remove(z);
 			for (int z = 0; z < Enemy_List.size(); ++z)
 				Enemy_List.remove(z);
 			StoreMenu(g);
@@ -203,16 +203,15 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 		backgroundgc.drawImage(startMenu, 0, 0, this);
 		newGameButtongc.drawImage(startButton, 520, 630, this);
 		newGameButtongc.setClip(550, 630, 250, 63);
-
 		backgroundgc.setColor(Color.white);
 		backgroundgc.drawString("제작자: ILL , JS , HS , JW", 1150, 785);
+		Draw_target();
 		g.drawImage(buffimg, 0, 0, this);
 	}
 
 	public void loading(Graphics g) {
 		charactergc.drawImage(Loading, 0, 0, this);
 		charactergc.setColor(Color.red);
-
 		charactergc.setFont(new Font("Default", Font.BOLD, 30));
 		charactergc.drawString("Tip", 150, 200);
 		charactergc.drawString("좀비 전부 처치시 상점 이동후 물약 및 무기 구입", 150, 255);
@@ -222,7 +221,8 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 		charactergc.drawString("H P  : 체력 최대치 +10", 150, 450);
 		charactergc.drawString("공격력   : 공격력 +1", 150, 500);
 		charactergc.drawString("이동속도: 이속 +1", 150, 550);
-
+		Draw_target();
+		
 		if (loddingtime == false) {
 			// 로딩 바
 			charactergc.setFont(new Font("Default", Font.BOLD, 50));
@@ -314,7 +314,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 		backgroundgc.drawImage(tree_img, 410, 45, this);
 		backgroundgc.setColor(Color.WHITE);
 		backgroundgc.setFont(new Font("Default", Font.BOLD, 30));
-		backgroundgc.drawString(" = " + treescore, 435, 70);
+		backgroundgc.drawString(" = " + itemscore, 435, 70);
 		backgroundgc.drawImage(tree_img, 340, 140, this);
 		backgroundgc.drawString(" = " + 6, 365, 165);
 		backgroundgc.drawImage(tree_img, 745, 140, this);
@@ -327,6 +327,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 		backgroundgc.drawString(" = " + 6, 770, 485);
 		backgroundgc.drawImage(tree_img, 1150, 460, this);
 		backgroundgc.drawString(" = " + 6, 1175, 485);
+		Draw_target();
 		g.drawImage(buffimg, 0, 0, this);
 	}
 
@@ -337,8 +338,9 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 		restartButtongc.setClip(510, 700, 250, 63);
 		backgroundgc.setFont(new Font("Default", Font.BOLD, 20));
 		backgroundgc.setColor(Color.WHITE);
-		backgroundgc.drawString("점수 : " + treescore, 1100, 730);
+		backgroundgc.drawString("점수 : " + itemscore, 1100, 730);
 		backgroundgc.drawString("죽인 몬스터 수 : " + monsterkill, 1100, 760);
+		Draw_target();
 		Endinit();
 		g.drawImage(buffimg, 0, 0, this);
 	}
@@ -346,12 +348,12 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 	public void Endinit() {
 		for (int z = 0; z < Missile_List.size(); ++z)
 			Missile_List.remove(z);
-		for (int z = 0; z < Tree_List.size(); ++z)
-			Tree_List.remove(z);
+		for (int z = 0; z < Item_List.size(); ++z)
+			Item_List.remove(z);
 		for (int z = 0; z < Enemy_List.size(); ++z)
 			Enemy_List.remove(z);
 		monsterkill = 0;
-		treescore = 0;
+		itemscore = 0;
 		HP = 30;
 		time = 0;
 		loddingtime = false;
@@ -371,7 +373,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 		f_height = 800;
 		HP = 50;
 		MaxHP = 50;
-		treescore = 0;
+		itemscore = 0;
 		level = 50;
 		monsterkill = 0;
 		monsterspeed = 10;
@@ -431,7 +433,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 		backgroundgc.drawString("목표 KILL:" + monstercnt + "   현재 KILL:" + monsterkill, 150, 50);
 		backgroundgc.drawImage(tree_img, 150, 50, this);
 		backgroundgc.setColor(Color.white);
-		backgroundgc.drawString(":" + treescore, 180, 70);
+		backgroundgc.drawString(":" + itemscore, 180, 70);
 
 		if (countdown > 140 && countdown < 200) {
 			charactergc.setColor(Color.WHITE);
@@ -458,17 +460,17 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 	}
 
 	public void Draw_target() {
-		cursergc.drawImage(target_img, (int) nowX - 12, (int) nowY - 15, this);
+		cursergc.drawImage(target_img, (int) nowX - 7, (int) nowY - 8, this);
 	}
 
 	public void Draw_item() {
-		for (int i = 0; i < Tree_List.size(); ++i) {
-			tr = (Tree) Tree_List.get(i);
-			itemgc.setClip(tr.x, tr.y, tr.width, tr.height);
-			itemgc.drawImage(tree_img, tr.x, tr.y, this);
-			if (Crash(charX, charY, tr.x, tr.y, charactergc, itemgc)) {
-				Tree_List.remove(i);
-				treescore++;
+		for (int i = 0; i < Item_List.size(); ++i) {
+			it = (Item) Item_List.get(i);
+			itemgc.setClip(it.x, it.y, it.width, it.height);
+			itemgc.drawImage(tree_img, it.x, it.y, this);
+			if (Crash(charX, charY, it.x, it.y, charactergc, itemgc)) {
+				Item_List.remove(i);
+				itemscore++;
 			}
 		}
 	}
@@ -496,9 +498,9 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 				if (Crash((int) ms.realX, (int) ms.realY, (int) en.x, (int) en.y, missilegc, cloudgc)) {
 					en.monsterHP -= damage;
 					if (en.monsterHP <= 0) {
-						tr = new Tree((int) en.x, (int) en.y, 33, 23);
+						it = new Item((int) en.x, (int) en.y, 33, 23);
 						Enemy_List.remove(i);
-						Tree_List.add(tr);
+						Item_List.add(it);
 						monsterkill++;
 					}
 
@@ -521,8 +523,8 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 				if (HP == 0) {
 					for (int z = 0; z < Missile_List.size(); ++z)
 						Missile_List.remove(z);
-					for (int z = 0; z < Tree_List.size(); ++z)
-						Tree_List.remove(z);
+					for (int z = 0; z < Item_List.size(); ++z)
+						Item_List.remove(z);
 					for (int z = 0; z < Enemy_List.size(); ++z)
 						Enemy_List.remove(z);
 					playStatus = 4;
@@ -727,19 +729,19 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 			}
 			// 아이템 1번~6번
 			if (x2 >= 100 && x2 <= 400 && y2 >= 360 && y2 <= 410) {
-				if (treescore >= 6) {
+				if (itemscore >= 6) {
 					itemstatus[0] = true;
 					itemcount[0]++;
-					treescore -= 6;
+					itemscore -= 6;
 					HPitem++;
 				}
 				return false;
 			}
 			if (x2 >= 500 && x2 <= 800 && y2 >= 360 && y2 <= 410) {
-				if (treescore >= 6) {
+				if (itemscore >= 6) {
 					itemstatus[1] = true;
 					itemcount[1]++;
-					treescore -= 6;
+					itemscore -= 6;
 					skill++;
 				}
 				return false;
@@ -797,6 +799,13 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 			}
 		}
 	}
+	
+	public void mouseProcess() {
+		if(shoot && (count % 10 == 0)) {
+			ms = new Missile(charX, charY,pressX, pressY, 5);
+			Missile_List.add(ms);
+		}	
+	}
 
 	@Override
 	public void keyPressed(KeyEvent arg0) {
@@ -847,6 +856,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 
 			try {
 				keyProcess();
+				mouseProcess();
 				EnemyProcess();
 				repaint();
 				Thread.sleep(20);
@@ -860,7 +870,12 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-
+		nowX = (double) e.getX();
+		nowY = (double) e.getY();
+		pressX = (double) e.getX();
+		pressY = (double) e.getY();
+		
+		shoot = true;
 	}
 
 	@Override
@@ -937,6 +952,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
+		shoot = false;
 	}
 
 	class Missile {
@@ -1137,11 +1153,11 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 		}
 	}
 
-	class Tree {
+	class Item {
 		int x, y;
 		int width, height;
 
-		public Tree(int x, int y, int width, int height) {
+		public Item(int x, int y, int width, int height) {
 			this.x = x;
 			this.y = y;
 			this.width = width;
