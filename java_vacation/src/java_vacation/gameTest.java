@@ -59,7 +59,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 	// 몬스터 , 캐릭터
 	Image Enemy_img, img;
 	// 상점
-	Image tree_img, Store, Skilliven1, Skillstore1, storeitem1, invenitem1;
+	Image item_img, Store, Skilliven1, Skillstore1, storeitem1, invenitem1;
 	// 그래픽스
 	Graphics charactergc, missilegc, cursergc, cloudgc, scoregc, itemgc, backgroundgc, newGameButtongc, storeButtongc,
 			restartButtongc, gungc;
@@ -131,7 +131,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 		Missile_img = new ImageIcon("물방울.png").getImage();
 		target_img = new ImageIcon("커서.png").getImage();
 		Enemy_img = new ImageIcon("몬스터.png").getImage();
-		tree_img = new ImageIcon("star.png").getImage();
+		item_img = new ImageIcon("star.png").getImage();
 		End_img = new ImageIcon("엔딩화면2.png").getImage();
 		startMenu = new ImageIcon("게임시작2.png").getImage();
 		startButton = new ImageIcon("NewGame.png").getImage();
@@ -330,21 +330,21 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 		backgroundgc.drawImage(Store, 0, 0, this);
 		backgroundgc.drawImage(storeitem1, 60, 125, this);
 		backgroundgc.drawImage(Skillstore1, 510, 155, this);
-		backgroundgc.drawImage(tree_img, 410, 45, this);
+		backgroundgc.drawImage(item_img, 410, 45, this);
 		backgroundgc.setColor(Color.WHITE);
 		backgroundgc.setFont(new Font("Default", Font.BOLD, 30));
 		backgroundgc.drawString(" = " + itemscore, 435, 70);
-		backgroundgc.drawImage(tree_img, 340, 140, this);
+		backgroundgc.drawImage(item_img, 340, 140, this);
 		backgroundgc.drawString(" = " + 6, 365, 165);
-		backgroundgc.drawImage(tree_img, 745, 140, this);
+		backgroundgc.drawImage(item_img, 745, 140, this);
 		backgroundgc.drawString(" = " + 6, 770, 165);
-		backgroundgc.drawImage(tree_img, 1150, 140, this);
+		backgroundgc.drawImage(item_img, 1150, 140, this);
 		backgroundgc.drawString(" = " + 6, 1175, 165);
-		backgroundgc.drawImage(tree_img, 340, 460, this);
+		backgroundgc.drawImage(item_img, 340, 460, this);
 		backgroundgc.drawString(" = " + 6, 365, 485);
-		backgroundgc.drawImage(tree_img, 745, 460, this);
+		backgroundgc.drawImage(item_img, 745, 460, this);
 		backgroundgc.drawString(" = " + 6, 770, 485);
-		backgroundgc.drawImage(tree_img, 1150, 460, this);
+		backgroundgc.drawImage(item_img, 1150, 460, this);
 		backgroundgc.drawString(" = " + 6, 1175, 485);
 		Draw_target();
 		g.drawImage(buffimg, 0, 0, this);
@@ -444,10 +444,10 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 		// 목표치
 		backgroundgc.setColor(Color.white);
 		backgroundgc.setFont(new Font("Default", Font.BOLD, 15));
-		backgroundgc.drawString("목표 KILL:" + monstercnt + "   현재 KILL:" + monsterkill, 150, 50);
-		backgroundgc.drawImage(tree_img, 150, 50, this);
+		backgroundgc.drawString("목표 KILL:" + monstercnt + "   현재 KILL:" + monsterkill, 50, 50);
+		backgroundgc.drawImage(item_img, 50, 50, this);
 		backgroundgc.setColor(Color.white);
-		backgroundgc.drawString(":" + itemscore, 180, 70);
+		backgroundgc.drawString(" : " + itemscore, 80, 70);
 
 		if (countdown > 140 && countdown < 200) {
 			charactergc.setColor(Color.WHITE);
@@ -471,7 +471,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 		if (clearstatus == true) {
 			storeButtongc.setColor(Color.RED);
 			storeButtongc.setFont(new Font("Default", Font.BOLD, 150));
-			storeButtongc.drawString("Stage Clear!", 270, 350);
+			storeButtongc.drawString("Stage Clear!", 170, 350);
 			storeButtongc.setColor(Color.white);
 			storeButtongc.setFont(new Font("Default", Font.BOLD, 20));
 			storeButtongc.drawString("초 뒤 상점으로 이동", 700, 500);
@@ -517,7 +517,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 		for (int i = 0; i < Item_List.size(); ++i) {
 			it = (Item) Item_List.get(i);
 			itemgc.setClip(it.x, it.y, 25, 25);
-			itemgc.drawImage(tree_img, it.x, it.y, this);
+			itemgc.drawImage(item_img, it.x, it.y, this);
 			if (Crash(charX, charY, it.x, it.y, charactergc, itemgc)) {
 				Item_List.remove(i);
 				Sound("아이템코인.wav", false);
@@ -753,23 +753,25 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 				statecode = false;
 				return false;
 			}
-			if (point > 0) {
+			if (statecode = true && point > 0) {
 				// HP , 공격력 , 이동속도
-				if (x2 >= 1250 && x2 <= 1265 && y2 >= 610 && y2 <= 635) {
-					MaxHP += 10;
-					HP += 10;
-					point--;
-					return false;
-				}
-				if (x2 >= 1250 && x2 <= 1265 && y2 >= 665 && y2 <= 685) {
-					damage += 1;
-					point--;
-					return false;
-				}
-				if (x2 >= 1250 && x2 <= 1265 && y2 >= 710 && y2 <= 735) {
-					player_Speed += 1;
-					point--;
-					return false;
+				if(count % 3 == 0) {
+					if (x2 >= 1250 && x2 <= 1265 && y2 >= 610 && y2 <= 635) {
+						MaxHP += 10;
+						HP += 10;
+						point--;
+						return false;
+					}
+					if (x2 >= 1250 && x2 <= 1265 && y2 >= 665 && y2 <= 685) {
+						damage += 1;
+						point--;
+						return false;
+					}
+					if (x2 >= 1250 && x2 <= 1265 && y2 >= 710 && y2 <= 735) {
+						player_Speed += 1;
+						point--;
+						return false;
+					}
 				}
 			}
 
@@ -853,9 +855,10 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 	}
 
 	public void mouseProcess() {
-		if (shoot && (count % 10 == 0)) {
+		
+		if (shoot && (count % 7 == 0)) {
 			if (countdown == 200) {
-				ms = new Missile(charX + 10, charY + 10, pressX, pressY, 5);
+				ms = new Missile(charX + 10, charY + 10, nowX, nowY, 5);
 				Missile_List.add(ms);
 			}
 		}
@@ -926,8 +929,6 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 	public void mouseDragged(MouseEvent e) {
 		nowX = (double) e.getX();
 		nowY = (double) e.getY();
-		pressX = (double) e.getX();
-		pressY = (double) e.getY();
 
 		shoot = true;
 	}
