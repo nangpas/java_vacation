@@ -197,7 +197,6 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 
 		if (playStatus == 4)
 			End(g);
-
 	}
 
 	public void startMenu(Graphics g) {
