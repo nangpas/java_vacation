@@ -59,7 +59,6 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 	Image Enemy_img, img;
 	// 상점
 	Image tree_img, Store, Skilliven1, Skillstore1, storeitem1, invenitem1;
-
 	// 그래픽스
 	Graphics charactergc, missilegc, cursergc, cloudgc, scoregc, itemgc, backgroundgc, newGameButtongc, storeButtongc,
 			restartButtongc, gungc;
@@ -137,7 +136,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 		Loading = new ImageIcon("로딩화면.png").getImage();
 		Store = new ImageIcon("상점.png").getImage();
 		restart = new ImageIcon("재시작.png").getImage();
-		background = new ImageIcon("배경화면.png").getImage();
+		background = new ImageIcon("배경화면2.png").getImage();
 		storeitem1 = new ImageIcon("물약.png").getImage();
 		invenitem1 = new ImageIcon("물약인벤.png").getImage();
 		Skilliven1 = new ImageIcon("스킬1.png").getImage();
