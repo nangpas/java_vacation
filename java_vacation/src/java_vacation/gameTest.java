@@ -130,13 +130,13 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 		Enemy_img = new ImageIcon("몬스터.png").getImage();
 		tree_img = new ImageIcon("star.png").getImage();
 		End_img = new ImageIcon("엔딩화면.png").getImage();
-		startMenu = new ImageIcon("게임시작.png").getImage();
+		startMenu = new ImageIcon("게임시작2.png").getImage();
 		startButton = new ImageIcon("NewGame.png").getImage();
 		GameOver = new ImageIcon("GameOver.png").getImage();
-		Loading = new ImageIcon("로딩화면.png").getImage();
+		Loading = new ImageIcon("로딩화면2.png").getImage();
 		Store = new ImageIcon("상점.png").getImage();
 		restart = new ImageIcon("재시작.png").getImage();
-		background = new ImageIcon("배경화면2.png").getImage();
+		background = new ImageIcon("배경화면.png").getImage();
 		storeitem1 = new ImageIcon("물약.png").getImage();
 		invenitem1 = new ImageIcon("물약인벤.png").getImage();
 		Skilliven1 = new ImageIcon("스킬1.png").getImage();
@@ -202,7 +202,7 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 
 	public void startMenu(Graphics g) {
 		backgroundgc.drawImage(startMenu, 0, 0, this);
-		newGameButtongc.drawImage(startButton, 550, 630, this);
+		newGameButtongc.drawImage(startButton, 520, 630, this);
 		newGameButtongc.setClip(550, 630, 250, 63);
 
 		backgroundgc.setColor(Color.white);
@@ -213,17 +213,16 @@ class Zombiworld extends JFrame implements Runnable, KeyListener, MouseListener,
 	public void loading(Graphics g) {
 		charactergc.drawImage(Loading, 0, 0, this);
 		charactergc.setColor(Color.red);
-		charactergc.setFont(new Font("함초롱바탕", Font.BOLD, 100));
-		charactergc.drawString("Zombi World", 300, 105);
+
 		charactergc.setFont(new Font("Default", Font.BOLD, 30));
 		charactergc.drawString("Tip", 150, 200);
 		charactergc.drawString("좀비 전부 처치시 상점 이동후 물약 및 무기 구입", 150, 255);
 		charactergc.drawString("스테이지 클리어시 주어진 스탯 포인트 5 주어짐", 150, 300);
 		charactergc.setColor(Color.WHITE);
-		charactergc.drawString("스탯 설명", 900, 450);
-		charactergc.drawString("H P  : 체력 최대치 +10", 900, 500);
-		charactergc.drawString("공격력   : 공격력 +1", 900, 550);
-		charactergc.drawString("이동속도: 이속 +1", 900, 600);
+		charactergc.drawString("스탯 설명", 150, 400);
+		charactergc.drawString("H P  : 체력 최대치 +10", 150, 450);
+		charactergc.drawString("공격력   : 공격력 +1", 150, 500);
+		charactergc.drawString("이동속도: 이속 +1", 150, 550);
 
 		if (loddingtime == false) {
 			// 로딩 바
